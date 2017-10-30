@@ -1,4 +1,4 @@
-@echo off& title soundRound& call lib\load.bat _readConfig _writeConfig& call lib\loadE.bat CurS CKey gplay disableX echox setWT cmdow& setlocal enabledelayedexpansion
+@echo off& title soundRound& call load.bat _readConfig _writeConfig& call loadE.bat CurS CKey gplay disableX echox setWT cmdow& setlocal enabledelayedexpansion
 cd data& %CurS% /crv 0& %disableX%& %setWT% soundRound,200
 
 

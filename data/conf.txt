@@ -1,1 +1,1 @@
-pointer=25
+pointer=23

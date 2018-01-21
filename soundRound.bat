@@ -1,4 +1,4 @@
-@echo off& title soundRound& call load.bat _strlen2 _getRandomNum& call loadE.bat CurS CKey gplay disableX cmdow gotoxy& setlocal enabledelayedexpansion
+@echo off& title soundRound& call load.bat _strlen2 _getRandomNum& call loadE.bat CurS CKey gplay disableX cmdow gotoxy& call loadF.bat _key& setlocal enabledelayedexpansion
 %CurS% /crv 0& %disableX%
 
 
@@ -18,18 +18,19 @@ for /l %%i in () do (
     for /l %%i in (0,1,!soundIndexMax!) do (
         set soundName=!soundName[%%i]!& set soundState=!soundState[%%i]!
         if %%i==!pointer! (
-            if !soundState!==0 (set soundStr=!soundStr!\E0!soundName! \n) else (set soundStr=!soundStr!\C0!soundName! \n)
+            if !soundState!==0 (set soundStr=!soundStr!\E0  !soundName!  \n) else (set soundStr=!soundStr!\C0  !soundName!  \n)
         ) else (
-            if !soundState!==0 (set soundStr=!soundStr!\uU!soundName! \n) else (set soundStr=!soundStr!\C0!soundName! \n)
+            if !soundState!==0 (set soundStr=!soundStr!\uU!soundName!  \n) else (set soundStr=!soundStr!\C0!soundName!  \n)
         )
     )
     %gotoxy% 0 0 "\p!preBlankLen!;!topBlankLen!!soundStr!"
     
-    
-    REM [1ио]  [2об] [3Enter] [4Esc]
-    pause>nul& %CKey% 0 38 40 13 27
-    (if !errorlevel!==1 set /a pointer-=1)& (if !errorlevel!==2 set /a pointer+=1)& (if !pointer! LSS 0 set pointer=!soundIndexMax!)& (if !pointer! GTR !soundIndexMax! set pointer=0)
-    if !errorlevel!==3 (
+    call %_key% up down enter esc
+    if !errorlevel!==1 (
+        set /a pointer-=1
+    ) else if !errorlevel!==2 (
+        set /a pointer+=1
+    ) else if !errorlevel!==3 (
         for %%i in (!pointer!) do (
             set soundName=!soundName[%%i]!& set soundState=!soundState[%%i]!
             if !soundState!==0 (
@@ -39,6 +40,8 @@ for /l %%i in () do (
                 set soundState[%%i]=0& taskkill /fi "WINDOWTITLE eq soundRound_!soundName!" >nul 2>nul
             )
         )
+    ) else if !errorlevel!==4 (
+        taskkill /fi "WINDOWTITLE eq soundRound_*" >nul 2>nul& exit
     )
-    if !errorlevel!==4 (taskkill /fi "WINDOWTITLE eq soundRound_*" >nul 2>nul& exit)
+    (if !pointer! LSS 0 set pointer=!soundIndexMax!)& (if !pointer! GTR !soundIndexMax! set pointer=0)
 )
